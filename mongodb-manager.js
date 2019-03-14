@@ -41,6 +41,11 @@
 			.then((collection) => collection.insertOne(item))
 			.then((res) => res.ops[0]);
 		}
+		
+		delete(id) {
+			return this._getCollection(this._dbName, this._collectionName)
+			.then((collection) => collection.findOneAndDelete({_id: new ObjectId(id)}));
+		}
 
 		update(item) {
 			return this._getCollection(this._dbName, this._collectionName)

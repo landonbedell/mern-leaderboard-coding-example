@@ -9,23 +9,15 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import SvgIcon from '@material-ui/core/SvgIcon';
+import Icon from '@material-ui/core/Icon';
 import EditPlayerModal from './EditPlayerModal';
 
 const socket = openSocket('http://localhost:5000');
-
-const starIcon = "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"
 
 const styles = (theme) => ({
 	title: {
 		paddingTop: '20px'
 	},
-	icon: {
-		width: '30px',
-		height: '30px',
-		paddingRight: '3px',
-		marginBottom: '-3px'
-	}
 });
 
 class Leaderboard extends Component {
@@ -58,6 +50,11 @@ class Leaderboard extends Component {
 			editOpen: true,
 			editPlayer: Object.assign({}, player),
 		});
+	}
+
+	deletePlayer(player) {
+		this.setState({editOpen: false});
+		socket.emit('delete_player', player._id);
 	}
 
 	handlePlayerChange(event) {
@@ -107,7 +104,7 @@ class Leaderboard extends Component {
 			<div>
 				<Paper className="Leaderboard">
 				    <Typography className={classes.title} variant="h4">
-  						<SvgIcon className={classes.icon}><path d={starIcon}/></SvgIcon>
+  						<Icon className={classes.icon}>stars</Icon>
   						Leaderboard
   					</Typography>					
       				<Table>
@@ -126,7 +123,6 @@ class Leaderboard extends Component {
 			            type="submit"
 			            fullWidth
 			            variant="contained"
-			            color="primary-light"
 			            onClick={() => this.addPlayer()}
 			        >
 			         Add Player + 
@@ -137,6 +133,7 @@ class Leaderboard extends Component {
 					player={this.state.editPlayer} 
 					onChange={(e) => this.handlePlayerChange(e)}
 					onSubmit={(e) => this.handleSubmit(e)}
+					onDelete={() => this.deletePlayer(this.state.editPlayer)}
 					onClose={() => this.setState({editOpen: false})}
 				/>
 			</div>

@@ -1,17 +1,26 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+const styles = (theme) => ({
+
+});
+
 function EditPlayerModal(props) {
+	const {classes} = props;
+	const isNew = !props.player.hasOwnProperty('_id'); 
+
 	return (
 		<Dialog open={props.open} aria-labelledby="form-dialog-title" onClose={props.onClose}>
-			<DialogTitle id="form-dialog-title">{props.player.hasOwnProperty('_id') ? 'Edit Player': 'Add Player'}</DialogTitle>
+			<DialogTitle id="form-dialog-title">{isNew ? 'Add Player': 'Edit Player'}</DialogTitle>
 			<DialogContent>
 				<form onSubmit={props.onSubmit}>
 					<FormControl margin="dense" required fullWidth>
@@ -35,25 +44,33 @@ function EditPlayerModal(props) {
 							startAdornment={<InputAdornment>$</InputAdornment>}
 						/>
 					</FormControl>
-					<Button
-			            type="submit"
-			            fullWidth
-			            variant="contained"
-			            color="primary"
-			        >
-			            Save
-		          	</Button>
-		          	<Button
-			            fullWidth
-			            variant="contained"
-			            color="primary"
-			        >
-			            Delete
-		          	</Button>
+					<DialogActions className={classes.buttons}>
+						<Button
+				            type="submit"
+				            fullWidth
+				            variant="contained"
+				            color="primary"
+				        >
+				            Save
+			          	</Button>
+			          	{
+			          		!isNew && 
+			          		<Button
+				          		className={classes.delete}
+					            fullWidth
+					            variant="contained"
+					            color="secondary"
+					            onClick={props.onDelete}
+				        	>
+					            Delete
+				          	</Button>
+			          	}
+			          	
+					</DialogActions>
 				</form>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-export default EditPlayerModal
+export default withStyles(styles)(EditPlayerModal)

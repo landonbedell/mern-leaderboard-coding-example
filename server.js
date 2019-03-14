@@ -16,30 +16,40 @@ app.get('/player', (req, res) => {
 });
 
 const mongodbManager = new MongodbManager('poker', 'leaderboard');
+
 io.on('connection', (client) => {
 	console.log('subscribeToLeaderboard!!!!');
+	const emitPlayers = () => {
+		return Promise.resolve()
+		.then(() => mongodbManager.list())
+		.then((players) => io.emit('players', players));
+	};
+
 	client.on('add_player', (player) => {
 		return Promise.resolve()
 		.then(() => {
 			console.log('ADDING PLAYER', player);
 			return mongodbManager.create(player);
 		})
-		.then((res) => mongodbManager.list())
-		.then((players) => io.emit('players', players));
+		.then(() => emitPlayers());
 	});
 
 	client.on('update_player', (player) => {
 		return Promise.resolve()
 		.then(() => mongodbManager.update(player))
-		.then((res) => mongodbManager.list())
-		.then((players) => io.emit('players', players));
+		.then(() => emitPlayers());
 	});
+
+	client.on('delete_player', (playerId) => {
+		return Promise.resolve()
+		.then(() => mongodbManager.delete(playerId))
+		.then(() => emitPlayers());
+	})
 
 	client.on('get_players', () => {
 		console.log('emitting players');
 		return Promise.resolve()
-		.then(() => mongodbManager.list())
-		.then((players) => io.emit('players', players));
+		.then(() => emitPlayers());
 	});
 
 	return Promise.resolve()
