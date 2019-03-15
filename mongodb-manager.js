@@ -12,43 +12,60 @@
 			this._collectionName = collectionName;
 		}
 
-		_connect(dbName) {
+		_connect(url) {
 			return Promise.resolve()
-			.then(() => MongoClient.connect(MONGO_URL, {useNewUrlParser: true}))
+			.then(() => MongoClient.connect(url, {useNewUrlParser: true}))
 			.catch((err) => Promise.reject(new Error(err)));
 		}
 
-		_getCollection(dbName, collection) {
-			return Promise.resolve()
-			.then(() => this._connect(dbName))
-			.then((client) => client.db(dbName))
-			.then((db) => db.collection(collection));
-		}
-
 		create(item, dbName=this._dbName, collectionName=this._collectionName) {
-			return this._getCollection(dbName, collectionName)
-			.then((collection) => collection.insertOne(item))
-			.then((res) => res.ops[0]);
+			return this._connect(MONGO_URL)
+			.then((client) => {
+				return Promise.resolve()
+				.then(() => client.db(dbName))
+				.then((db) => db.collection(collectionName))
+				.then((collection) => collection.insertOne(item))
+				.then(() => client.close());
+			});
 		}
 		
 		delete(id, dbName=this._dbName, collectionName=this._collectionName) {
-			return this._getCollection(dbName, collectionName)
-			.then((collection) => collection.findOneAndDelete({_id: new ObjectId(id)}, {returnOriginal: false}))
-			.then((res) => res.value);
+			return this._connect(MONGO_URL)
+			.then((client) => {
+				return Promise.resolve()
+				.then(() => client.db(dbName))
+				.then((db) => db.collection(collectionName))
+				.then((collection) => collection.findOneAndDelete({_id: new ObjectId(id)}, {returnOriginal: false}))
+				.then(() => client.close());
+			});
 		}
 
 		update(item, dbName=this._dbName, collectionName=this._collectionName) {
-			return this._getCollection(dbName, collectionName)
-			.then((collection) => {
-				const {_id, ...update} = item;
-				return collection.findOneAndUpdate({_id: new ObjectId(_id)}, {$set: update}, {returnOriginal: false});
-			})
-			.then((res) => res.value);
+			return this._connect(MONGO_URL)
+			.then((client) => {
+				return Promise.resolve()
+				.then(() => client.db(dbName))
+				.then((db) => db.collection(collectionName))
+				.then((collection) => {
+					const {_id, ...update} = item;
+					return collection.findOneAndUpdate({_id: new ObjectId(_id)}, {$set: update}, {returnOriginal: false});
+				})
+				.then(() => client.close());
+			});
 		}
 
 		list(query = {}, dbName=this._dbName, collectionName=this._collectionName) {
-			return this._getCollection(dbName, collectionName)
-			.then((collection) => collection.find(query).toArray());
+			return this._connect(MONGO_URL)
+			.then((client) => {
+				return Promise.resolve()
+				.then(() => client.db(dbName))
+				.then((db) => db.collection(collectionName))
+				.then((collection) => collection.find(query).toArray())
+				.then((res) => {
+					return client.close()
+					.then(() => res);
+				});
+			});
 		}
 	}
 
