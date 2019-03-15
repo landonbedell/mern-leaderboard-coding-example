@@ -10,7 +10,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 import EditPlayerModal from './EditPlayerModal';
+import yellow from '@material-ui/core/colors/yellow';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -18,6 +21,14 @@ const styles = (theme) => ({
 	title: {
 		paddingTop: '20px'
 	},
+	avatar: {
+		marginRight: '10px',
+		width: '30px',
+		height: '30px',
+	},
+	icon: {
+		color: yellow
+	}
 });
 
 class Leaderboard extends Component {
@@ -88,13 +99,27 @@ class Leaderboard extends Component {
 	render() {
 		const {classes} = this.props;
 
+		const hash = (b64) => parseInt('0x'+b64) % 5;
+
 		const players = this.state.players.sort((a, b) => {
 			return b.winnings - a.winnings;
 		}).map((player, index) => {
 			return (
 				<TableRow key={player._id} hover={true} onClick={() => this.editPlayer(player)}>
 					<TableCell padding='checkbox'>{index+1}</TableCell>
-					<TableCell> {player.name}</TableCell>
+					<TableCell> 
+						<Grid container justify="left" alignItems="center">
+							{/* 
+								For now just using static images for Avatars.
+								TODO: Add support for image upload during player creation
+							*/} 
+							<Avatar 
+								className={classes.avatar}
+								src={`${process.env.PUBLIC_URL}/res/player_icons/player${hash(player._id)}.jpg`}
+							></Avatar>
+							<div>{player.name}</div>
+						</Grid>
+					</TableCell>
 					<TableCell> ${this.numberWithCommas(player.winnings)}</TableCell>
 				</TableRow>
 			);
