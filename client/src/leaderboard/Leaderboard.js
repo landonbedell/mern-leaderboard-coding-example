@@ -111,7 +111,7 @@ class Leaderboard extends Component {
 						<TableHead>
 							<TableRow>
 								<TableCell padding='checkbox'></TableCell>
-								<TableCell> Name </TableCell>
+								<TableCell> Player </TableCell>
 								<TableCell> Winnings </TableCell>
 							</TableRow>
 						</TableHead>

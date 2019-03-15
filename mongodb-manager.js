@@ -4,7 +4,7 @@
 	const MongoClient = MongoDB.MongoClient;
 	const ObjectId = MongoDB.ObjectId;
 
-	const mongoUrl = "mongodb://localhost:27017/"
+	const MONGO_URL = "mongodb://localhost:27017/";
 
 	class MongodbManager {
 		constructor(dbName, collectionName) {
@@ -14,7 +14,7 @@
 
 		_connect(dbName) {
 			return Promise.resolve()
-			.then(() => MongoClient.connect(mongoUrl))
+			.then(() => MongoClient.connect(MONGO_URL, {useNewUrlParser: true}))
 			.catch((err) => Promise.reject(new Error(err)));
 		}
 
@@ -25,40 +25,29 @@
 			.then((db) => db.collection(collection));
 		}
 
-		_connectAndExecute(dbName, collection, cb) {
-			return Promise.resolve()
-			.then(() => {
-				return MongoClient.connect((mongoUrl), (err, db) =>{
-					if (err) throw err;
-					const dbo = db.db(dbName);
-					cb(dbo.collection(collecton))
-				});
-			})
-		}
-
-		create(item) {
-			return this._getCollection(this._dbName, this._collectionName)
+		create(item, dbName=this._dbName, collectionName=this._collectionName) {
+			return this._getCollection(dbName, collectionName)
 			.then((collection) => collection.insertOne(item))
 			.then((res) => res.ops[0]);
 		}
 		
-		delete(id) {
-			return this._getCollection(this._dbName, this._collectionName)
-			.then((collection) => collection.findOneAndDelete({_id: new ObjectId(id)}));
+		delete(id, dbName=this._dbName, collectionName=this._collectionName) {
+			return this._getCollection(dbName, collectionName)
+			.then((collection) => collection.findOneAndDelete({_id: new ObjectId(id)}, {returnOriginal: false}))
+			.then((res) => res.value);
 		}
 
-		update(item) {
-			return this._getCollection(this._dbName, this._collectionName)
+		update(item, dbName=this._dbName, collectionName=this._collectionName) {
+			return this._getCollection(dbName, collectionName)
 			.then((collection) => {
 				const {_id, ...update} = item;
-				console.log('updating!!!', _id, update);
 				return collection.findOneAndUpdate({_id: new ObjectId(_id)}, {$set: update}, {returnOriginal: false});
 			})
 			.then((res) => res.value);
 		}
 
-		list(query = {}, options = {}) {
-			return this._getCollection(this._dbName, this._collectionName)
+		list(query = {}, dbName=this._dbName, collectionName=this._collectionName) {
+			return this._getCollection(dbName, collectionName)
 			.then((collection) => collection.find(query).toArray());
 		}
 	}
