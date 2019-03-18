@@ -14,7 +14,6 @@ import Icon from '@material-ui/core/Icon';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import EditPlayerModal from './EditPlayerModal';
-import yellow from '@material-ui/core/colors/yellow';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -26,9 +25,6 @@ const styles = (theme) => ({
 		marginRight: '10px',
 		width: '30px',
 		height: '30px',
-	},
-	icon: {
-		color: yellow
 	},
 	flag: {
 		marginRight: '10px'
@@ -55,7 +51,11 @@ class Leaderboard extends Component {
 	addPlayer() {
 		this.setState({
 			editOpen: true,
-			editPlayer: {},
+			editPlayer: {
+				name: '',
+				winnings: '',
+				country: ''
+			},
 		});
 	}
 

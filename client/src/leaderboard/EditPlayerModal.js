@@ -71,7 +71,7 @@ function EditPlayerModal(props) {
 							value={props.player.country}
 							onChange={props.onChange}
 						>
-							<MenuItem value={null}>
+							<MenuItem value="none">
 				             	<em>None</em>
 				            </MenuItem>
 							{flagElems}
