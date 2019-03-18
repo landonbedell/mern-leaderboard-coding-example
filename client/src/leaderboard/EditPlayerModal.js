@@ -1,4 +1,5 @@
 import React from 'react';
+import Flag from "react-world-flags";
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -9,17 +10,36 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = (theme) => ({
-
+	flag: {
+		marginRight: '10px'
+	}
 });
 
 function EditPlayerModal(props) {
 	const {classes} = props;
 	const isNew = !props.player.hasOwnProperty('_id'); 
 
+	const flags = [
+		{code: 'au', name:'Australia'},
+		{code: 'ca', name: 'Canada'},
+		{code: 'cn', name: 'China'},
+		{code: 'us', name: 'USA'}
+	];
+
+	const flagElems = flags.map((flag) => {
+		return (
+			<MenuItem key={flag.code} value={flag.code}>
+				<Flag className={classes.flag} height="16" code={flag.code}/> {flag.name}
+			</MenuItem>
+		);
+	})
+
 	return (
-		<Dialog open={props.open} aria-labelledby="form-dialog-title" onClose={props.onClose}>
+		<Dialog className={classes.dialog} open={props.open} aria-labelledby="form-dialog-title" onClose={props.onClose} fullWidth>
 			<DialogTitle id="form-dialog-title">{isNew ? 'Add Player': 'Edit Player'}</DialogTitle>
 			<DialogContent>
 				<form onSubmit={props.onSubmit}>
@@ -43,6 +63,19 @@ function EditPlayerModal(props) {
 							onChange={props.onChange}
 							startAdornment={<InputAdornment>$</InputAdornment>}
 						/>
+					</FormControl>
+					<FormControl margin="dense" fullWidth>
+						<InputLabel htmlFor="country">Country</InputLabel>
+						<Select
+							name="country"
+							value={props.player.country}
+							onChange={props.onChange}
+						>
+							<MenuItem value={null}>
+				             	<em>None</em>
+				            </MenuItem>
+							{flagElems}
+						</Select>
 					</FormControl>
 					<DialogActions className={classes.buttons}>
 						<Button

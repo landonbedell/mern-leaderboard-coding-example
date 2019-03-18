@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import openSocket from 'socket.io-client';
+import Flag from "react-world-flags";
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
@@ -28,6 +29,9 @@ const styles = (theme) => ({
 	},
 	icon: {
 		color: yellow
+	},
+	flag: {
+		marginRight: '10px'
 	}
 });
 
@@ -56,7 +60,6 @@ class Leaderboard extends Component {
 	}
 
 	editPlayer(player) {
-		console.log('edit Player!!', player);
 		this.setState({
 			editOpen: true,
 			editPlayer: Object.assign({}, player),
@@ -69,7 +72,6 @@ class Leaderboard extends Component {
 	}
 
 	handlePlayerChange(event) {
-		console.log('handling player change', event);
 		const player = Object.assign({}, this.state.editPlayer, {[event.target.name]: event.target.value})
 		this.setState({editPlayer: player});
 	}
@@ -108,7 +110,7 @@ class Leaderboard extends Component {
 				<TableRow key={player._id} hover={true} onClick={() => this.editPlayer(player)}>
 					<TableCell padding='checkbox'>{index+1}</TableCell>
 					<TableCell> 
-						<Grid container justify="left" alignItems="center">
+						<Grid container justify="flex-start" alignItems="center">
 							{/* 
 								For now just using static images for Avatars.
 								TODO: Add support for image upload during player creation
@@ -121,6 +123,9 @@ class Leaderboard extends Component {
 						</Grid>
 					</TableCell>
 					<TableCell> ${this.numberWithCommas(player.winnings)}</TableCell>
+					<TableCell>
+						{player.country && <Flag className={classes.flag} height="16" code={player.country}/>}
+					</TableCell>
 				</TableRow>
 			);
 		});
@@ -129,6 +134,7 @@ class Leaderboard extends Component {
 			<div>
 				<Paper className="Leaderboard">
 				    <Typography className={classes.title} variant="h4">
+				    	
   						<Icon className={classes.icon}>stars</Icon>
   						Leaderboard
   					</Typography>					
@@ -138,6 +144,7 @@ class Leaderboard extends Component {
 								<TableCell padding='checkbox'></TableCell>
 								<TableCell> Player </TableCell>
 								<TableCell> Winnings </TableCell>
+								<TableCell> Country </TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
