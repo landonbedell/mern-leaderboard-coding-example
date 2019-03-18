@@ -42,6 +42,12 @@ class Leaderboard extends Component {
 		};
 	}
 
+	componentDidMount() {
+		return Promise.resolve()
+		.then(() => this.registerPlayerListener())
+		.then(() => socket.emit('get_players'));
+	}
+
 	registerPlayerListener() {
 		socket.on('players', (players) => {
 			this.setState({players: players});
@@ -84,12 +90,6 @@ class Leaderboard extends Component {
 		} else {
 			socket.emit('add_player', this.state.editPlayer);
 		}
-	}
-
-	componentDidMount() {
-		return Promise.resolve()
-		.then(() => this.registerPlayerListener())
-		.then(() => socket.emit('get_players'));
 	}
 
 	numberWithCommas(x) {

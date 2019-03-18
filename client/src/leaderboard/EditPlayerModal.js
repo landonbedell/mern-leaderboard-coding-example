@@ -39,7 +39,7 @@ function EditPlayerModal(props) {
 	})
 
 	return (
-		<Dialog className={classes.dialog} open={props.open} aria-labelledby="form-dialog-title" onClose={props.onClose} fullWidth>
+		<Dialog open={props.open} aria-labelledby="form-dialog-title" onClose={props.onClose} fullWidth>
 			<DialogTitle id="form-dialog-title">{isNew ? 'Add Player': 'Edit Player'}</DialogTitle>
 			<DialogContent>
 				<form onSubmit={props.onSubmit}>
