@@ -1,6 +1,6 @@
 const app = require('express')();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {pingTimeout: 60000});
 const port = process.env.PORT || 5000;
 const MongodbManager = require('./mongodb-manager');
 const mongodbManager = new MongodbManager('poker', 'leaderboard');

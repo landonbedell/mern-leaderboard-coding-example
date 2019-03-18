@@ -68,6 +68,7 @@ function EditPlayerModal(props) {
 						<InputLabel htmlFor="country">Country</InputLabel>
 						<Select
 							name="country"
+							displayEmpty
 							value={props.player.country}
 							onChange={props.onChange}
 						>
