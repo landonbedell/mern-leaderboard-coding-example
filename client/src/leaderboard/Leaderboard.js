@@ -28,7 +28,15 @@ const styles = (theme) => ({
 	},
 	flag: {
 		marginRight: '10px'
-	}
+	},
+  	root: {
+	    width: '100%',
+	    marginTop: theme.spacing.unit * 3,
+	    overflowX: 'auto',
+	},
+  	table: {
+    	minWidth: 500,
+  	},
 });
 
 class Leaderboard extends Component {
@@ -137,20 +145,22 @@ class Leaderboard extends Component {
 				    	
   						<Icon className={classes.icon}>stars</Icon>
   						Leaderboard
-  					</Typography>					
-      				<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell padding='checkbox'></TableCell>
-								<TableCell> Player </TableCell>
-								<TableCell> Winnings </TableCell>
-								<TableCell> Country </TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{players}
-						</TableBody>
-					</Table>
+  					</Typography>
+  					<div className={classes.root}>
+	      				<Table className={classes.table}>
+							<TableHead>
+								<TableRow>
+									<TableCell padding='checkbox'></TableCell>
+									<TableCell> Player </TableCell>
+									<TableCell> Winnings </TableCell>
+									<TableCell> Country </TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{players}
+							</TableBody>
+						</Table>
+  					</div>				
 					<Button
 			            type="submit"
 			            fullWidth
